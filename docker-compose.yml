@@ -1,0 +1,25 @@
+version: '3.8'
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mysql-db
+      - redis
+    environment:
+      - DATABASE_URL=mysql+pymysql://user:password@mysql-db/algorithm_db
+      - REDIS_URL=redis://redis:6379/0
+  mysql-db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: algorithm_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
