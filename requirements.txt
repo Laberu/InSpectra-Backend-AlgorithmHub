@@ -5,3 +5,5 @@ pymysql
 redis
 dotenv
 httpx
+python-multipart
+cryptography
