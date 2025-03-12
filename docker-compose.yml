@@ -1,15 +1,18 @@
-version: '3.8'
 services:
   api:
     build: .
     ports:
-      - "8000:8000"
+      - "8001:8001"
     depends_on:
       - mysql-db
       - redis
     environment:
       - DATABASE_URL=mysql+pymysql://user:password@mysql-db/algorithm_db
       - REDIS_URL=redis://redis:6379/0
+      - ALGO_BACKEND_URL=http://host.docker.internal:3000  # Ensures API Hub can reach Algorithm Backend
+    networks:
+      - app_network
+
   mysql-db:
     image: mysql:latest
     environment:
@@ -19,7 +22,16 @@ services:
       MYSQL_PASSWORD: password
     ports:
       - "3306:3306"
+    networks:
+      - app_network
+
   redis:
     image: redis:latest
     ports:
       - "6379:6379"
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge

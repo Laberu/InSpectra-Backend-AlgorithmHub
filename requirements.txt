@@ -4,3 +4,4 @@ SQLAlchemy
 pymysql
 redis
 dotenv
+httpx
