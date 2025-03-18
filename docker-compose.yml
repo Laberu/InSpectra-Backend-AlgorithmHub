@@ -10,6 +10,8 @@ services:
       - DATABASE_URL=mysql+pymysql://user:password@mysql-db/algorithm_db
       - REDIS_URL=redis://redis:6379/0
       - ALGO_BACKEND_URL=http://host.docker.internal:3000  # Ensures API Hub can reach Algorithm Backend
+      - RESOURCE_BACKEND_URL=http://host.docker.internal:4000
+
     networks:
       - app_network
 

@@ -19,3 +19,27 @@ async def send_zip_to_algorithm(zip_file: bytes, filename: str):
     except Exception as e:
         logger.error(f"Error connecting to Algorithm Backend: {str(e)}")
         return {"error": "Algorithm Backend connection failed"}
+    
+async def fetch_project_status(job_id: str):
+    """Fetches the status of a project from the Algorithm Backend."""
+    url = f"{ALGO_BACKEND_URL}/api/status/{job_id}"
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.get(url)
+            response.raise_for_status()
+            return response.json()
+    except Exception as e:
+        logger.error(f"Error fetching project status for {job_id}: {str(e)}")
+        return None
+
+async def download_project_output(job_id: str):
+    """Downloads project output from Algorithm Backend."""
+    url = f"{ALGO_BACKEND_URL}/api/download/{job_id}"
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.get(url)
+            response.raise_for_status()
+            return response.content
+    except Exception as e:
+        logger.error(f"Error downloading project {job_id}: {str(e)}")
+        return None
