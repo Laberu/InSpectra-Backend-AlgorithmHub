@@ -7,7 +7,7 @@ from app.core.logger import logger
 
 async def fetch_project_status(job_id: str):
     """Fetches the status of a project from Algorithm Backend."""
-    url = f"{ALGO_BACKEND_URL}/api/status/{job_id}"
+    url = f"{ALGO_BACKEND_URL}/status/{job_id}"
     try:
         async with httpx.AsyncClient() as client:
             response = await client.get(url)

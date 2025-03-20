@@ -4,7 +4,7 @@ from app.core.logger import logger
 
 async def send_zip_to_algorithm(zip_file: bytes, filename: str):
     """Uploads a ZIP file to the Algorithm Backend."""
-    url = f"{ALGO_BACKEND_URL}/api/upload"
+    url = f"{ALGO_BACKEND_URL}/upload"
     files = {"file": (filename, zip_file, "application/zip")}
     
     try:
@@ -22,7 +22,7 @@ async def send_zip_to_algorithm(zip_file: bytes, filename: str):
     
 async def fetch_project_status(job_id: str):
     """Fetches the status of a project from the Algorithm Backend."""
-    url = f"{ALGO_BACKEND_URL}/api/status/{job_id}"
+    url = f"{ALGO_BACKEND_URL}/status/{job_id}"
     try:
         async with httpx.AsyncClient() as client:
             response = await client.get(url)
@@ -34,7 +34,7 @@ async def fetch_project_status(job_id: str):
 
 async def download_project_output(job_id: str):
     """Downloads project output from Algorithm Backend."""
-    url = f"{ALGO_BACKEND_URL}/api/download/{job_id}"
+    url = f"{ALGO_BACKEND_URL}/download/{job_id}"
     try:
         async with httpx.AsyncClient() as client:
             response = await client.get(url)
