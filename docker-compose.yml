@@ -9,8 +9,8 @@ services:
     environment:
       - DATABASE_URL=mysql+pymysql://user:password@mysql-db/algorithm_db
       - REDIS_URL=redis://redis:6379/0
-      - ALGO_BACKEND_URL=http://host.docker.internal:50051  # Ensures API Hub can reach Algorithm Backend
-      - RESOURCE_BACKEND_URL=http://host.docker.internal:4000
+      - ALGO_BACKEND_URL=https://algo.inspectra.site  # Ensures API Hub can reach Algorithm Backend
+      - RESOURCE_BACKEND_URL=https://storage.inspectra.site
 
     networks:
       - app_network
