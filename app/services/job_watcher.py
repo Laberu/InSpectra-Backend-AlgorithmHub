@@ -16,7 +16,7 @@ async def check_and_process_jobs():
     while True:
         try:
             db: Session = SessionLocal()
-            projects = db.query(Project).filter(Project.status != "completed").all()
+            projects = db.query(Project).filter(Project.status != "stored").all()
             for project in projects:
                 status_data = await fetch_project_status(project.job_id)
                 if status_data and status_data.get("status") == "completed":

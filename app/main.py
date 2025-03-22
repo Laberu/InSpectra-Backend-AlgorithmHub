@@ -6,6 +6,8 @@ from app.api.endpoints.status import router as status_router
 from app.api.endpoints.resource import router as resource_router
 from app.services.job_watcher import start_job_watcher
 from app.core.logger import logger
+from app.database.db_session import engine
+from app.database.models import Base
 
 app = FastAPI(title="Algorithm API Hub")
 
@@ -19,10 +21,23 @@ app.include_router(resource_router, prefix="/resource")
 def root():
     return {"message": "Algorithm API Hub is running!"}
 
+import time
+from sqlalchemy.exc import OperationalError
+
 @app.on_event("startup")
-def startup_event():
-    """Starts job watcher when the API starts."""
-    logger.info("Starting job watcher...")
+async def startup_event():
+    print("🔧 Creating database tables if not exist...")
+    for _ in range(10):  # Try for ~10s
+        try:
+            Base.metadata.create_all(bind=engine)
+            print("✅ Tables checked/created.")
+            break
+        except OperationalError:
+            print("⏳ Waiting for DB...")
+            time.sleep(1)
+    else:
+        raise Exception("❌ Could not connect to DB after retries")
+
     start_job_watcher()
 
 
