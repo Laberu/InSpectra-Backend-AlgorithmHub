@@ -42,7 +42,16 @@ async def process_completed_project(db: Session, job_id: str, user_id: str):
             f.write(zip_content)
         logger.info(f"File saved temporarily at {temp_path}")
 
-        success = await send_to_resource_backend(user_id, job_id, temp_path)
+        project = get_project_by_job_id(db, job_id)
+
+        success = await send_to_resource_backend(
+            user_id,
+            job_id,
+            temp_path,
+            project.name,
+            project.description
+        )
+
         if success:
             update_project_status(db, job_id, "stored")
             logger.info(f"Project {job_id} output stored in Resource Backend.")
