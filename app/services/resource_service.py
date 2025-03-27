@@ -15,6 +15,7 @@ async def send_to_resource_backend(
             files = {"zipFile": (f"{job_id}.zip", zip_file, "application/zip")}
             data = {
                 "userId": user_id,
+                "jobId": job_id,
                 "projectName": project_name,
                 "description": description
             }

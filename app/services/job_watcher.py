@@ -31,18 +31,25 @@ async def check_and_process_jobs():
 async def process_completed_project(db: Session, job_id: str, user_id: str):
     """Downloads and sends completed job output to the Resource Backend."""
     try:
+        project = get_project_by_job_id(db, job_id)
+        if not project:
+            logger.error(f"No project found with job_id {job_id}")
+            return
+
+        if project.status == "stored":
+            logger.info(f"Project {job_id} already marked as stored. Skipping upload.")
+            return
+
         logger.info(f"Downloading output for project {job_id} from Algorithm Backend.")
         zip_content = await download_project_output(job_id)
         if not zip_content:
             logger.error(f"Failed to download project {job_id}. No content received.")
             return
-        
+
         temp_path = f"/tmp/{job_id}.zip"
         with open(temp_path, "wb") as f:
             f.write(zip_content)
         logger.info(f"File saved temporarily at {temp_path}")
-
-        project = get_project_by_job_id(db, job_id)
 
         success = await send_to_resource_backend(
             user_id,
@@ -58,8 +65,10 @@ async def process_completed_project(db: Session, job_id: str, user_id: str):
             os.remove(temp_path)  # Clean up temp file
         else:
             logger.error(f"Failed to store project {job_id} output in Resource Backend.")
+
     except Exception as e:
         logger.error(f"Failed to process completed project {job_id}: {str(e)}")
+
 
 # Start job watcher in background
 def start_job_watcher():
