@@ -16,7 +16,7 @@ async def check_and_process_jobs():
     while True:
         try:
             db: Session = SessionLocal()
-            projects = db.query(Project).filter(Project.status != "stored").all()
+            projects = db.query(Project).filter(Project.status != "finished").all()
             for project in projects:
                 status_data = await fetch_project_status(project.job_id)
                 if status_data and status_data.get("status") == "completed":
@@ -60,7 +60,7 @@ async def process_completed_project(db: Session, job_id: str, user_id: str):
         )
 
         if success:
-            update_project_status(db, job_id, "stored")
+            # update_project_status(db, job_id, "stored")
             logger.info(f"Project {job_id} output stored in Resource Backend.")
             os.remove(temp_path)  # Clean up temp file
         else:
