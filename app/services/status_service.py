@@ -35,9 +35,22 @@ async def fetch_user_project_statuses(db: Session, user_id: str):
     """Fetches and updates the status of all projects related to a specific user."""
     projects = db.query(Project).filter(Project.user_id == user_id).all()
     results = []
+
     for project in projects:
         status_data = await fetch_project_status(project.job_id)
         if status_data:
             update_project_status(db, project.job_id, status_data.get("status"))
-            results.append(status_data)
+
+            # Combine DB + status result
+            combined = {
+                "job_id": project.job_id,
+                "status": status_data.get("status"),
+                "name": project.name,
+                "description": project.description,
+                "user_id": project.user_id,
+                "signed": False,  # Placeholder
+            }
+
+            results.append(combined)
+
     return results

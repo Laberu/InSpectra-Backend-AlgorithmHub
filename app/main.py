@@ -1,5 +1,6 @@
 import uvicorn
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware 
 from app.api.endpoints.health import router as health_router
 from app.api.endpoints.projects import router as projects_router
 from app.api.endpoints.status import router as status_router
@@ -10,6 +11,16 @@ from app.database.db_session import engine
 from app.database.models import Base
 
 app = FastAPI(title="Algorithm API Hub")
+
+
+# ✅ CORS Middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Include API routes
 app.include_router(health_router, prefix="/health")

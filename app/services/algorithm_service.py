@@ -11,14 +11,23 @@ async def send_zip_to_algorithm(zip_file: bytes, filename: str):
         async with httpx.AsyncClient() as client:
             response = await client.post(url, files=files)
             response.raise_for_status()
-            data = response.json()
+
+            # ❗ Only use `await` if it’s an async method
+            if response.headers.get("content-type") == "application/json":
+                data = response.json()  # remove await
+            else:
+                logger.error("Unexpected response type from Algorithm Backend.")
+                return {"error": "Invalid response format from algorithm"}
+
             return {"job_id": data.get("job_id"), "status": data.get("grpc_status")}
+
     except httpx.HTTPStatusError as e:
         logger.error(f"Algorithm Backend error: {e.response.status_code} - {e.response.text}")
         return {"error": "Algorithm Backend failed", "status_code": e.response.status_code}
     except Exception as e:
         logger.error(f"Error connecting to Algorithm Backend: {str(e)}")
         return {"error": "Algorithm Backend connection failed"}
+
     
 async def fetch_project_status(job_id: str):
     """Fetches the status of a project from the Algorithm Backend."""

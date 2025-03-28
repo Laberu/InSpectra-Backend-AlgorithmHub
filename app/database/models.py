@@ -9,4 +9,7 @@ class Project(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(String(255), nullable=False)  
     job_id = Column(String(255), unique=True, nullable=False) 
-    status = Column(String(50), default="queued", nullable=False) 
+    status = Column(String(50), default="queued", nullable=False)
+    name = Column(String(255), nullable=False) 
+    description = Column(String(1000), nullable=True)
+
