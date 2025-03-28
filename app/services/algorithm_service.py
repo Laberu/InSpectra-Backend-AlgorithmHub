@@ -1,7 +1,9 @@
 import httpx
 from app.core.config import ALGO_BACKEND_URL
 from app.core.logger import logger
+
 from io import BytesIO
+import httpx
 import logging
 
 logger = logging.getLogger(__name__)
@@ -13,13 +15,13 @@ async def send_zip_to_algorithm(zip_file: bytes, filename: str):
     # Stream the ZIP file using BytesIO
     zip_stream = BytesIO(zip_file)
 
-    # # Set a generous timeout for large files
-    # timeout = httpx.Timeout(300.0)  # 5 minutes
+    # Set a generous timeout for large files
+    timeout = httpx.Timeout(120.0)  # 2 minutes
 
     files = {"file": (filename, zip_stream, "application/zip")}
 
     try:
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(timeout=timeout) as client:
             response = await client.post(url, files=files)
             response.raise_for_status()
 
