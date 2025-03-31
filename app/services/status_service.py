@@ -39,12 +39,27 @@ async def fetch_user_project_statuses(db: Session, user_id: str):
     for project in projects:
         status_data = await fetch_project_status(project.job_id)
         if status_data:
-            update_project_status(db, project.job_id, status_data.get("status"))
+            raw_status = status_data.get("status")
+            progress = status_data.get("progress")
+
+            # Append progress to status if not finished
+            if raw_status != "finished":
+                if progress == 100:
+                    status_with_progress = "finalizing"
+                elif progress is not None:
+                    status_with_progress = f"{raw_status} {int(progress)}%"
+                else:
+                    status_with_progress = raw_status
+            else:
+                status_with_progress = raw_status
+
+
+            update_project_status(db, project.job_id, status_with_progress)
 
             # Combine DB + status result
             combined = {
                 "job_id": project.job_id,
-                "status": status_data.get("status"),
+                "status": status_with_progress,
                 "name": project.name,
                 "description": project.description,
                 "user_id": project.user_id,
@@ -54,3 +69,4 @@ async def fetch_user_project_statuses(db: Session, user_id: str):
             results.append(combined)
 
     return results
+
