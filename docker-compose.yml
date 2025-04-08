@@ -10,7 +10,7 @@ services:
       - DATABASE_URL=mysql+pymysql://user:password@mysql-db/algorithm_db
       - ALGO_BACKEND_URL=http://host.docker.internal:50051  # Ensures API Hub can reach Algorithm Backend
       - RESOURCE_BACKEND_URL=http://host.docker.internal:4000
-      - AUTH_SERVICE_URL = "https://auth.inspectra.site
+      - AUTH_SERVICE_URL = https://auth.inspectra.site
     networks:
       - app_network
     restart: always
