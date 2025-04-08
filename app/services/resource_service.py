@@ -10,7 +10,6 @@ async def send_to_resource_backend(
     zip_file_path: str,
     project_name: str,
     description: str,
-    user_email: str
 ):
     """Uploads completed project output to Resource Backend and notifies user via email."""
     try:
